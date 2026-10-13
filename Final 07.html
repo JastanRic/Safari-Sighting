@@ -1287,7 +1287,7 @@
 .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#F2D27A,#7CE0A0);border-radius:9px;transition:width .4s}
 .pp{background-size:cover;background-position:center}
 .hd{background-image:radial-gradient(circle at 92% 0,rgba(242,210,122,.28),transparent 55%)}
-#fab{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:8px;padding:12px 20px;border:0;border-radius:99px;background:#C9923A;color:#12372B;font:700 14px -apple-system,Segoe UI,sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.4);cursor:pointer;animation:rise .4s both}
+#fab{position:fixed;left:0;right:0;margin:0 auto;width:max-content;bottom:18px;z-index:30;;display:flex;align-items:center;gap:8px;padding:12px 20px;border:0;border-radius:99px;background:#C9923A;color:#12372B;font:700 14px -apple-system,Segoe UI,sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.4);cursor:pointer;animation:rise .4s both}
 #fab[hidden]{display:none}
 
 /* ===== TICK ANIMATIONS ===== */
@@ -1510,7 +1510,7 @@ const SAMPLE = [
   { ID: 4, Category: 'Birds', 'Common name': 'Indian peafowl', 'Scientific name': 'Pavo cristatus', 'IUCN status': 'Least concern', 'Did you know': 'Only the male carries the long, colourful train.', 'Male caption': 'Peacock with train', 'Female caption': 'Peahen, duller plumage' },
   { ID: 5, Category: 'Birds', 'Common name': 'Painted stork', 'Scientific name': 'Mycteria leucocephala', 'IUCN status': 'Near threatened', 'Did you know': 'Painted storks sweep their bills through water to find fish.', 'Male caption': 'Adult male', 'Female caption': 'Adult female' },
   { ID: 6, Category: 'Reptiles', 'Common name': 'Mugger crocodile', 'Scientific name': 'Crocodylus palustris', 'IUCN status': 'Vulnerable', 'Did you know': 'Muggers can survive in both fresh and brackish water.', 'Male caption': 'Adult male', 'Female caption': 'Adult female' },
-  { ID: 7, Category: 'Butterfly', 'Common name': 'Common Mormon', 'Scientific name': 'Papilio polytes', 'IUCN status': 'Not evaluated', 'Did you know': 'Some females mimic other toxic butterflies to avoid predators.', 'Male caption': 'Male', 'Female caption': 'Female, mimic form' },
+  { ID: 7, Category: 'Butterflies', 'Common name': 'Common Mormon', 'Scientific name': 'Papilio polytes', 'IUCN status': 'Not evaluated', 'Did you know': 'Some females mimic other toxic butterflies to avoid predators.', 'Male caption': 'Male', 'Female caption': 'Female, mimic form' },
   { ID: 8, Category: 'Trees', 'Common name': 'Palu tree', 'Scientific name': 'Manilkara hexandra', 'IUCN status': 'Not evaluated', 'Did you know': 'Palu is a hardwood tree common in dry-zone forests.', 'Male caption': 'Leaves and fruit', 'Female caption': 'Trunk and bark' }
 ];
 </script>
@@ -1523,7 +1523,7 @@ const CATS = [
     'Reptiles',
     'Amphibians',
     'Fish',
-    'Butterfly',
+    'Butterflies',
     'Trees',
     'Other'
 ];
@@ -1534,7 +1534,7 @@ const CC = {
     Reptiles: '#4C7A2E',
     Amphibians: '#6B7A3A',
     Fish: '#397A8A',
-    Butterfly: '#8A5A9E',
+    Butterflies: '#8A5A9E',
     Trees: '#3F6F45',
     Other: '#7A4F8F'
 };
@@ -1585,8 +1585,8 @@ async function img(u) {
 
         const canvas = document.createElement('canvas');
 
-        canvas.width = 1000;
-        canvas.height = 750;
+        canvas.width = 600;
+        canvas.height = 450;
 
         const ctx = canvas.getContext('2d');
 
@@ -1594,15 +1594,17 @@ async function img(u) {
             bitmap,
             0,
             0,
-            1000,
-            750
+            600,
+            450
         );
+	bitmap.close();
+	
+const out = canvas.toDataURL('image/jpeg', 0.7);
+	
+canvas.width = canvas.height = 0;
 
-        return canvas.toDataURL(
-            'image/jpeg',
-            0.8
-        );
-
+	return out;
+       
     } catch (e) {
 
         return null;
@@ -2626,8 +2628,8 @@ window.buildReport = buildReport;
 /* ===== PART 2: SIGHTING TICK PAGE ===== */
 (function () {
   const $ = id => document.getElementById(id);
-  const CAT = { Mammals: '#8B5A2B', Birds: '#2B90D9', Reptiles: '#4A7C59', Amphibians: '#8A9A5B', Fish: '#5B84B1', Butterfly: '#C9651B', Trees: '#2D5A27', Other: '#7851A9' };
-  const ORDER = ['Mammals', 'Birds', 'Reptiles', 'Amphibians', 'Fish', 'Butterfly', 'Trees'];
+  const CAT = { Mammals: '#8B5A2B', Birds: '#2B90D9', Reptiles: '#4A7C59', Amphibians: '#8A9A5B', Fish: '#5B84B1', Butterflies: '#C9651B', Trees: '#2D5A27', Other: '#7851A9' };
+  const ORDER = ['Mammals', 'Birds', 'Reptiles', 'Amphibians', 'Fish', 'Butterflies', 'Trees'];
   const ST = {
     'Critically endangered': ['CRITICALLY ENDANGERED', '#FBE4E4', '#8C1D1D'],
     'Endangered': ['ENDANGERED', '#FBE4E4', '#8C1D1D'],
@@ -2711,7 +2713,7 @@ window.buildReport = buildReport;
       if (!items.length && !ex.length && !add) return;
       const got = SP.filter(s => s.Category === c && tk[s.ID]).length + (isO ? extra.length : 0);
       h += '<div class="cat" style="background:' + CAT[c] + '">' + c.toUpperCase() + '<small>' + got + ' spotted</small></div>';
-      if (add) h += '<div class="ot"><p>Spotted something new? <I>Type its name</I>.</p><div class="f"><input id="ox" placeholder="e.g. Fishing cat" aria-label="New sighting"><button id="oa">Add</button></div><div class="er" id="er"></div></div>';
+      if (add) h += '<div class="ot"><p>Spotted something new? <I>Type its name</I>.</p><div class="f"><input id="ox" placeholder="e.g. Lion" aria-label="New sighting"><button id="oa">Add</button></div><div class="er" id="er"></div></div>';
       items.forEach(s => { h += row(s, tk[s.ID], false, s.ID); });
       ex.forEach(x => { h += row({ 'Common name': x[0].name }, x[0].time, true, x[1]); });
     });
@@ -2759,15 +2761,47 @@ window.buildReport = buildReport;
     } catch (e) { }
   }
 
-  async function flush() {
-    if (CONFIG.API.startsWith('PASTE')) return;
-    const qd = JSON.parse(localStorage.getItem('queue') || '[]'), rest = [];
-    for (const j of qd) {
-      try { await fetch(CONFIG.API, { method: 'POST', mode: 'no-cors', body: JSON.stringify(Object.assign({ action: 'submit' }, j)) }); }
-      catch (e) { rest.push(j); }
+const qdb = () => new Promise((res, rej) => {
+  const r = indexedDB.open('safariQueue', 1);
+  r.onupgradeneeded = () => r.result.createObjectStore('jobs', { keyPath: 'id' });
+  r.onsuccess = () => res(r.result);
+  r.onerror = () => rej(r.error);
+});
+const qTx = async (mode, fn) => {
+  const db = await qdb();
+  return new Promise((res, rej) => {
+    const t = db.transaction('jobs', mode);
+    const out = fn(t.objectStore('jobs'));
+    t.oncomplete = () => { db.close(); res(out && out.result); };
+    t.onerror = t.onabort = () => { db.close(); rej(t.error); };
+  });
+};
+const qPut = job => qTx('readwrite', s => s.put(job));
+const qAll = () => qTx('readonly', s => s.getAll());
+const qDel = id => qTx('readwrite', s => s.delete(id));
+const blobToB64 = b => new Promise((res, rej) => {
+  const f = new FileReader();
+  f.onload = () => res(String(f.result).split(',')[1]);
+  f.onerror = () => rej(f.error);
+  f.readAsDataURL(b);
+});
+
+let flushing = false;
+async function flush() {
+  if (CONFIG.API.startsWith('PASTE') || flushing) return;
+  flushing = true;
+  try {
+    const jobs = await qAll();
+    for (const j of jobs) {
+      try {
+        const body = Object.assign({ action: 'submit' }, j, { pdf: await blobToB64(j.pdf) });
+        await fetch(CONFIG.API, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body) });
+        await qDel(j.id);
+      } catch (e) { }
     }
-    localStorage.setItem('queue', JSON.stringify(rest));
-  }
+  } catch (e) { }
+  flushing = false;
+}
 
   /* ---- PDF file name + email text (sent to Apps Script with every submission) ---- */
   const cleanName = t => String(t).replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim();
@@ -2814,7 +2848,7 @@ window.buildReport = buildReport;
     const c = e.target.closest('.cd'); if (!c) return;
     const k = c.getAttribute('data-k');
     if (c.getAttribute('data-x') === '1') extra.splice(+k, 1);
-    else if (tk[k]) delete tk[k]; else { tk[k] = now(); burst(c.querySelector('.bx')); }
+    else if (tk[k]) delete tk[k]; else { tk[k] = now();}
     save(); $('gm').textContent = ''; draw();
     if (c.getAttribute('data-x') !== '1') {
       const was = !tk[k], el = [...$('ls').querySelectorAll('.cd')].find(x => x.getAttribute('data-k') === k);
@@ -2846,8 +2880,8 @@ window.buildReport = buildReport;
     try {
       const rows = reportRows();
       doc = await window.buildReport({ name: G.name, email: G.email, park: G.parkLabel, date: G.date }, rows);
-      const job = { id: Date.now() + '-' + Math.random().toString(36).slice(2), sid: G.sid, name: G.name, email: G.email, park: G.parkLabel, date: fmt(G.date), species: rows.map(r => r['Common name']), pdf: doc.output('datauristring').split(',')[1], fileName: reportFileName(), subject: emailSubject(), body: emailText(), htmlBody: emailHtml() };
-      const qd = JSON.parse(localStorage.getItem('queue') || '[]'); qd.push(job); localStorage.setItem('queue', JSON.stringify(qd));
+      const job = { id: Date.now() + '-' + Math.random().toString(36).slice(2), sid: G.sid, name: G.name, email: G.email, park: G.parkLabel, date: fmt(G.date), species: rows.map(r => r['Common name']), pdf: doc.output('blob'), fileName: reportFileName(), subject: emailSubject(), body: emailText(), htmlBody: emailHtml() };
+      try { await qPut(job); } catch (e) { console.error('Queue failed', e); }
       $('dsum').textContent = n + ' sighting' + (n > 1 ? 's' : '') + ' recorded and every moment is becoming a beautiful memory from your safari journey.' + (CONFIG.API.startsWith('PASTE') ? ' Test mode: no email was sent.' : '');
       $('dl').disabled = false;
       flush();
